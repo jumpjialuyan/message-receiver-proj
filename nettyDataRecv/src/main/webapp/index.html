@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Netty Server</title>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/data.js"></script>
+	<script src="js/myjs.js"></script>
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="./js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link href="./css/mystyle.css?v=2" rel="stylesheet">
+    
+<link href="./css/bootstrap.min.css" rel="stylesheet" />
+<link href="./css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link href="./css/font-awesome.css" rel="stylesheet" />
+ <link href="./css/adminia.css" rel="stylesheet" /> 
+<link href="./css/adminia-responsive.css" rel="stylesheet" /> 
+<link href="./css/pages/login.css" rel="stylesheet" /> 
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 				
+			</a>
+			<a class="brand" href="./">Netty Server 配置</a>
+			<div class="nav-collapse">
+				<ul class="nav pull-right">
+					<li class="">
+						<a href="javascript:;"><i class="icon-chevron-left"></i> Back to Homepage</a>
+					</li>
+				</ul>
+			</div> <!-- /nav-collapse -->
+		</div> <!-- /container -->
+	</div> <!-- /navbar-inner -->
+</div> <!-- /navbar -->
+
+<div id="login-container">
+	<div id="login-header">
+		<h3>元数据数据库信息</h3>
+	</div> <!-- /login-header -->
+	<div id="login-content" class="clearfix">
+	<form action="./" />
+				<fieldset>
+					<div class="form-group">
+						<label for="mysql_username" class="control-label">mysql用户名</label>
+						<input type="text" class="form-control" id="mysql_username" placeholder="mysql用户名">
+					</div>
+					<div class="form-group">
+						<label for="mysql_pwd" class="control-label">mysql密码</label>
+						<input type="text" class="form-control" id="mysql_pwd" placeholder="mysql密码">
+					</div>
+					<div class="form-group">
+						<label for="mysql_driver" class="control-label">mysql驱动类</label>
+						<input type="text" class="form-control" id="mysql_driver" placeholder="mysql驱动类">
+					</div>
+					<div class="form-group ">
+						<label for="mysql_URL" class="control-label">mysql_URL</label>
+						<input type="text" class="form-control" id="mysql_URL" placeholder="mysql_URL">
+					</div>
+					<div class="form-group">
+						<label for="mysql_database_name" class="control-label">mysql_database_name</label>
+						<input type="text" class="form-control" id="mysql_database_name" placeholder="数据库名称">
+					</div>
+				
+				</fieldset>
+				
+				<div class="pull-right">
+					<button type="button" class="btn btn-warning btn-large" id="commit">
+						确定
+					</button>
+				</div>
+			</form>
+			
+		</div> <!-- /login-content -->
+</div> <!-- /login-wrapper -->
+<!-- Modal -->
+<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-header">
+		<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+		<h3 id="myModalLabel">警告：</h3>
+	</div>
+	<div class="modal-body">
+		<p id="content"></p>
+	</div>
+	<div class="modal-footer">
+		<button class="btn btn-primary"  data-dismiss="modal" aria-hidden="true">确认</button>
+	</div>
+</div>
+
+<script type="text/javascript">
+	/*$("#commit").click(function(){
+		window.location.href="./html/index.html";
+		//window.location.href='http://www.baidu.com';
+	});*/
+
+    $(document).ready(function(){
+        sendRequest("http://localhost:65000/servlet/initConfig","","Get",function(result){
+            var jsonResult = JSON.parse(result);
+            console.log(jsonResult);
+            if(jsonResult.errorCode == 0) {
+
+                var init = jsonResult["init"];
+                if (init) {
+					window.location.href="./html/nettyToKafka.html";
+                }else{
+
+				}
+            }else{
+                $('#content').html("请求失败!"+result.result);
+                $('#myModal').modal('show');
+            }
+        });
+        //setInterval(startMonitorServer,2000);
+
+    });
+
+
+    $("#commit").click(function (e) {
+        var requestData = {};
+        var mysql_username = $("#mysql_username").val();
+        var mysql_pwd = $("#mysql_pwd").val();
+        var mysql_driver = $("#mysql_driver").val();
+        var mysql_URL = $("#mysql_URL").val();
+        var mysql_database_name = $("#mysql_database_name").val();
+        if(mysql_username == "" || mysql_username == null || mysql_username == undefined){
+            $('#content').html("mysql用户名不能为空！");
+            $('#myModal').modal('show');
+            return;
+		}
+
+        if(mysql_pwd == "" || mysql_pwd == null || mysql_pwd == undefined){
+            $('#content').html("mysql密码不能为空！");
+            $('#myModal').modal('show');
+            return;
+        }
+
+        if(mysql_driver == "" || mysql_driver == null || mysql_driver == undefined){
+            $('#content').html("mysql 驱动类不能为空！");
+            $('#myModal').modal('show');
+            return;
+        }
+
+        if(mysql_URL == "" || mysql_URL == null || mysql_URL == undefined){
+            $('#content').html("mysql 链接不能为空！");
+            $('#myModal').modal('show');
+            return;
+        }
+
+        if(mysql_database_name == "" || mysql_database_name == null || mysql_database_name == undefined){
+            $('#content').html("mysql 数据库不能为空！");
+            $('#myModal').modal('show');
+            return;
+        }
+
+        requestData.isFirst = true;
+        requestData.mysql_username = mysql_username;
+        requestData.mysql_pwd = mysql_pwd;
+        requestData.mysql_driver = mysql_driver;
+        requestData.mysql_URL = mysql_URL;
+        requestData.mysql_database_name = mysql_database_name;
+        submit(requestData);
+    });
+    function submit(requestData) {
+        sendRequest("http://localhost:65000/servlet/settingConfig",requestData,"Post",function (result) {
+            console.log(result);
+            var  jsonResult = JSON.parse(result);
+            if(jsonResult.errorCode == 0) {
+                $('#content').html("设置成功!");
+                $('#myModal').modal('show');
+                window.location = "html/nettyToKafka.html"
+            } else{
+                $('#content').html("设置失败!"+result.result);
+                $('#myModal').modal('show');
+            }
+        })
+    }
+
+	
+</script>
+</body>
+</html>

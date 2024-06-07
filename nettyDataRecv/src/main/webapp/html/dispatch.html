@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Netty Server</title>
+	<script src="../js/jquery-3.2.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/data.js"></script>
+	<script src="../js/myjs.js"></script>
+	<script type="text/javascript" src="../js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="../js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+	<link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+	<link href="../css/mystyle.css?v=2" rel="stylesheet">
+
+	<link href="../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../css/bootstrap-responsive.min.css" rel="stylesheet" />
+	<link href="../css/font-awesome.css" rel="stylesheet" />
+	<link href="../css/adminia.css" rel="stylesheet" />
+	<link href="../css/adminia-responsive.css" rel="stylesheet" />
+	<link href="../css/pages/login.css" rel="stylesheet" />
+	<style>
+		.progress{
+			height: 25px;
+		}
+	</style>
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 				
+			</a>
+			<a class="brand" href="./">Netty Server 配置</a>
+			<div class="nav-collapse">
+				<ul class="nav pull-right">
+					<li class="">
+						<a href="javascript:;"><i class="icon-chevron-left"></i> Back to Homepage</a>
+					</li>
+				</ul>
+			</div> <!-- /nav-collapse -->
+		</div> <!-- /container -->
+	</div> <!-- /navbar-inner -->
+</div> <!-- /navbar -->
+
+<div id="login-container">
+	<div id="login-header">
+		<h3>文件分发</h3>
+	</div> <!-- /login-header -->
+	<div id="login-content" class="clearfix">
+		<div class="form-group">
+			<label>配置文件分发</label>
+		</div>
+
+		<div class="progress progress-striped active">
+		  <div class="bar" id="fileprogress"  role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;width: 0%;color: white;text-align: center;">
+		    0%
+		  </div>
+		</div>
+		<div class="form-group">
+			<label>jar文件分发</label>
+		</div>
+		<div class="progress  progress-striped active">
+		  <div class="bar" id="jarprogress" role="progressbar" aria-valuenow="2" aria-valuemin="0" aria-valuemax="100" style="min-width: 2em;height: 3em; width: 2%;color: white;text-align: center;">
+		    0%
+		  </div>
+		</div>
+		<form>
+			<div class="pull-right">
+				<button type="button" id="surebutton" class="btn btn-warning btn-large" disabled id="commit">
+					确定
+				</button>
+			</div>
+		</form>
+	</div>
+
+	</div>
+</body>
+<script>
+	$(document).ready(function(event){
+        sendRequest("http://localhost:65000/servlet/dispatchConfigFile","","Get",function(result) {
+            //console.log(result)
+			try {
+                var jsonResult = JSON.parse(result);
+                if (jsonResult.errorCode == 0) {
+                    $("#fileprogress").css("width","100%");
+                    $("#fileprogress").html("100%");
+                    sendRequest("http://localhost:65000/servlet/dispatchJar", "", "Get", function (result) {
+                        var jsonResultInner = JSON.parse(result);
+                        if(jsonResultInner.errorCode == 0){
+                            $("#jarprogress").css("width","100%");
+                            $("#jarprogress").html("100%");
+                            $('#surebutton').attr("disabled",false);
+						}
+                    });
+                } else {
+                    //TODO:错误处理
+                }
+            }catch (e){
+                console.log(e)
+				console.log(result)
+			}
+        });
+	});
+
+	$("#surebutton").click(function(){
+		window.location.href="./status.html";
+		//window.location.href='http://www.baidu.com';
+	});
+</script>
+</html>

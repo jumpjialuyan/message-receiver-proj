@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8">
+	<title>Netty Server</title>
+	<script src="../js/jquery-3.2.1.min.js"></script>
+	<script src="../js/bootstrap.min.js"></script>
+	<script src="../js/data.js"></script>
+	<script src="../js/myjs.js"></script>
+	<script type="text/javascript" src="../js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+	<script type="text/javascript" src="../js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+	<link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+	<link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+	<link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+	<link href="../css/mystyle.css?v=2" rel="stylesheet">
+
+	<link href="../css/bootstrap.min.css" rel="stylesheet" />
+	<link href="../css/bootstrap-responsive.min.css" rel="stylesheet" />
+	<link href="../css/font-awesome.css" rel="stylesheet" />
+	<link href="../css/adminia.css" rel="stylesheet" />
+	<link href="../css/adminia-responsive.css" rel="stylesheet" />
+	<link href="../css/pages/login.css?v=1" rel="stylesheet" />
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 				
+			</a>
+			<a class="brand" href="./">Netty Server 配置</a>
+			<div class="nav-collapse">
+				<ul class="nav pull-right">
+					<li class="">
+						<a href="javascript:;"><i class="icon-chevron-left"></i> Back to Homepage</a>
+					</li>
+				</ul>
+			</div> <!-- /nav-collapse -->
+		</div> <!-- /container -->
+	</div> <!-- /navbar-inner -->
+</div> <!-- /navbar -->
+
+<div id="login-container">
+	<div id="login-header">
+		<h3>运行状态</h3>
+	</div> <!-- /login-header -->
+	<div class="alert alert-danger alert-dismissible" role="alert"></div>
+	<div id="login-content" class="clearfix">
+		<table class="table table-striped status_table">
+			<thead>
+			<tr><th>主机</th><th>运行状态</th><th>操作</th></tr>
+			</thead>
+			<tbody id="runstatus">
+			</tbody>
+		</table>
+		<form>
+			<div class="pull-right">
+				<button type="button" class="btn btn-warning btn-large" id="startAll">
+					启动全部
+				</button>
+				<button type="button" class="btn btn-warning btn-large" id="stopAll">
+					停止全部
+				</button>
+			</div>
+		</form>
+	</div> <!-- /login-content -->
+</div> <!-- /login-wrapper -->
+</body>
+<script>
+    var currentCount = 0;
+	$(document).ready(function(event){
+        startMonitorServer();
+        if(currentCount == 0){
+            $(".alert").hide();
+        }
+        startMonitorServerAndAlertDiv();
+	});
+
+	function startMonitorServerAndAlertDiv() {
+		setInterval(function(){
+            startMonitorServer();
+		    if(currentCount == 0){
+                $(".alert").hide();
+			}else{
+                currentCount--;
+			}
+		},3000);
+    }
+
+		$("#commit").click(function(){
+		window.location.href="./dispatch.html";
+		//window.location.href='http://www.baidu.com';
+	});
+
+	$("#startAll").click(function (event) {
+
+	    sendRequest("http://localhost:65000/servlet/startNetty", "", "Get", function (result) {
+	        var jsonResult = JSON.parse(result);
+	        console.log(jsonResult);
+            if (jsonResult.errorCode == 0) {
+
+                var html = "";
+                for(var i in jsonResult.result) {//不使用过滤
+                    html += "<span>" + i + ":" + jsonResult.result[i] + "</span><br>";
+                }
+                currentCount = 9;
+                /*for (var i = 0; i < result.result; i++) {
+
+                }*/
+                $(".alert").show();
+                $(".alert").html(html);
+
+                /*$('#content').html("设置成功!");
+                $('#myModal').modal('show');*/
+            }
+        });
+    });
+
+    $("#stopall").click(function (event) {
+        sendRequest("http://localhost:65000/servlet/stopNetty", "", "Get", function (result) {
+            var jsonResult = JSON.parse(result);
+            if (jsonResult.errorCode == 0) {
+                var html = "";
+                for(var i in jsonResult.result) {//不使用过滤
+                    html += "<span>" + i + ":" + jsonResult.result[i] + "</span><br>";
+                }
+                currentCount = 9;
+				/*for (var i = 0; i < result.result; i++) {
+
+				 }*/
+                $(".alert").show();
+                $(".alert").html(html);
+            }
+        });
+    });
+
+
+    function singleOpt(host,cmd) {
+        var requestdata={};
+        requestdata.host = host;
+        requestdata.cmd = cmd;
+        sendRequest("http://localhost:65000/servlet/singleOprationNetty", requestdata, "Get", function (result) {
+
+            var jsonResult = JSON.parse(result);
+            if (jsonResult.errorCode == 0) {
+                var html = "";
+                for(var i in jsonResult.result) {//不使用过滤
+                    html += "<span>" + i + ":" + jsonResult.result[i] + "</span><br>";
+                }
+                currentCount = 9;
+				/*for (var i = 0; i < result.result; i++) {
+
+				 }*/
+                $(".alert").show();
+                $(".alert").html(html);
+            }
+        });
+
+    }
+
+
+    function startMonitorServer(){
+
+        sendRequest("http://localhost:65000/servlet/nettyStatus","","Get",function(result){
+            var jsonResult = JSON.parse(result);
+            if(jsonResult.errorCode == 0){
+                var html = "";
+                for(var i=0;i<jsonResult.allServer.length;i++) {
+                    if(jsonResult.status[jsonResult.allServer[i]]) {
+                        html += '<tr><td>'+jsonResult.allServer[i]+'</td><td><div class="greencircle"></div></td><td><a href="javascript:void(0)" onclick="singleOpt(\''+jsonResult.allServer[i]+'\',\'start\')">启动</a> &nbsp;<a href="javascript:void(0)" onclick="singleOpt(\''+jsonResult.allServer[i]+'\',\'stop\')">停止</a> &nbsp;<a href="javascript:void(0)" onclick="singleOpt(\''+jsonResult.allServer[i]+'\',\'restart\')">重新启动</a></td></tr>';
+                    }else{
+                        html += '<tr><td>'+jsonResult.allServer[i]+'</td><td><div class="redcircle"></div></td><td><a href="javascript:void(0)" onclick="singleOpt(\''+jsonResult.allServer[i]+'\',\'start\')">启动</a> &nbsp;<a href="javascript:void(0)" onclick="singleOpt(\''+jsonResult.allServer[i]+'\',\'stop\')">停止</a> &nbsp;<a href="javascript:void(0)" onclick="singleOpt(\''+jsonResult.allServer[i]+'\',\'restart\')">重新启动</a></td></tr>';
+                    }
+                }
+                $("#runstatus").html(html);
+            }else{
+
+            }
+        });
+
+    }
+</script>
+</html>

@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xmlns:web="http://java.sun.com/xml/ns/javaee/web-app_2_5.xsd" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" version="3.0">
+    <display-name></display-name>
+
+    <servlet>
+        <servlet-name>HelloWorldServlet</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.ConfigServerHandler</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>HelloWorldServlet</servlet-name>
+        <url-pattern>/servlet/HelloWorldServlet</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>initConfig</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.InitConfigTable</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>initConfig</servlet-name>
+        <url-pattern>/servlet/initConfig</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>settingConfig</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.SettingHandler</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>settingConfig</servlet-name>
+        <url-pattern>/servlet/settingConfig</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>startNetty</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.StartNetty</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>startNetty</servlet-name>
+        <url-pattern>/servlet/startNetty</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet>
+        <servlet-name>nettyStatus</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.ServerStatusHandler</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>nettyStatus</servlet-name>
+        <url-pattern>/servlet/nettyStatus</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DispatchConfigFile</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.DispatchConfigFile</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DispatchConfigFile</servlet-name>
+        <url-pattern>/servlet/dispatchConfigFile</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>DispatchJar</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.DispatchJar</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>DispatchJar</servlet-name>
+        <url-pattern>/servlet/dispatchJar</url-pattern>
+    </servlet-mapping>
+
+    <servlet>
+        <servlet-name>stopNetty</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.StopNetty</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>stopNetty</servlet-name>
+        <url-pattern>/servlet/stopNetty</url-pattern>
+    </servlet-mapping>
+    <servlet>
+        <servlet-name>SingleOprationNetty</servlet-name>
+        <servlet-class>com.shm.metro.jettyserver.handler.SingleOprationNetty</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>SingleOprationNetty</servlet-name>
+        <url-pattern>/servlet/singleOprationNetty</url-pattern>
+    </servlet-mapping>
+
+
+
+    SingleOprationNetty
+    <welcome-file-list>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+</web-app>

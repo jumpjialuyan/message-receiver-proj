@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>控制面板</title>
+<script src="js/jquery-3.2.1.min.js"></script>
+<script src="js/bootstrap.min.js"></script>
+<script src="js/data.js"></script>
+<script type="text/javascript" src="./js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="./js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<link href="css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="./css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="./css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link href="./css/mystyle.css?v=2" rel="stylesheet">
+</head>
+<body>
+<div class="container-fluid">
+	<form>
+		<input type="text" style="display:none" id="id"/>
+
+		<div class="form-group init_hide">
+			<label for="zk_quorum">zookeeper集群信息</label>
+			<input type="text" class="form-control" id="zk_quorum" placeholder="zk_quorum">
+		</div>
+		<div class="form-group init_hide">
+			<label for="kafka_broker_list">Kafka Broker List</label>
+			<input type="text" class="form-control" id="kafka_broker_list" placeholder="kafka_broker_list">
+		</div>
+		<div class="form-group init_hide">
+			<label for="key_serializer">Kafka keySerializer类名</label>
+			<input type="text" class="form-control" id="key_serializer" placeholder="keySerializer类名">
+		</div>
+		<div class="form-group init_hide">
+			<label for="value_serializer">Kafka valueSerializer类名</label>
+			<input type="text" class="form-control" id="value_serializer" placeholder="valueSerializer类名">
+		</div>
+		<div class="form-group init_hide">
+			<label for="listen_port">Netty 监听端口</label>
+			<input type="text" class="form-control" id="listen_port" placeholder="Netty 监听端口">
+		</div>
+		<div class="form-group init_hide">
+			<label for="rpc_port">Netty rpc监听端口</label>
+			<input type="text" class="form-control" id="rpc_port" placeholder="Netty rpc监听端口">
+		</div>
+		<div class="form-group init_hide">
+			<label for="dynamicload_classname">解析类名称</label>
+			<input type="text" class="form-control" id="dynamicload_classname" placeholder="解析类名称">
+		</div>
+		<div class="form-group init_hide">
+			<label for="server_host">Netty Server主机</label>
+			<input type="text" class="form-control" id="server_host" placeholder="Netty Server主机">
+		</div>
+		<div class="form-group init_hide">
+			<label for="server_host_username">Netty Server主机用户名</label>
+			<input type="password" class="form-control" id="server_host_username" placeholder="Netty Server主机用户名">
+		</div>
+		<div class="form-group init_hide">
+			<label class="checkbox">
+				<input type="checkbox" id="nopwd" onclick="hide_pwd_input(this)"> 免密登录
+			</label>
+		</div>
+		<div class="form-group init_hide server_host_pwd">
+			<label for="server_host_pwd">Netty Server主机密码</label>
+			<input type="password" class="form-control" id="server_host_pwd" placeholder="Netty Server主机密码">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_username">mysql用户名</label>
+			<input type="text" class="form-control" id="mysql_username" placeholder="mysql用户名">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_pwd">mysql密码</label>
+			<input type="text" class="form-control" id="mysql_pwd" placeholder="mysql密码">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_driver">mysql驱动类</label>
+			<input type="text" class="form-control" id="mysql_driver" placeholder="mysql驱动类">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_URL">mysql_URL</label>
+			<input type="text" class="form-control" id="mysql_URL" placeholder="mysql_URL">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_database_name">mysql_database_name</label>
+			<input type="text" class="form-control" id="mysql_database_name" placeholder="数据库名称">
+		</div>
+
+		<div class="form-group init_hide">
+			<table class="table" id = "status_table">
+				<tr><td>sh2.mlamp.co:2181</td><td><div class="circle"></div></td></tr>
+			</table>
+
+		</div>
+
+
+
+		<button type="button" class="btn btn-default" id="submit">Submit</button>
+		<button type="button" class="btn btn-default init_hide" id="startup">启动所有nettyServer</button>
+		<button type="button" class="btn btn-default init_hide" id="stopall">停止所有nettyServer</button>
+	</form>
+
+</div>
+	
+	<!-- Modal -->
+	<div id="myModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	  <div class="modal-header">
+	    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+	    <h3 id="myModalLabel">警告：</h3>
+	  </div>
+	  <div class="modal-body">
+	    <p id="content"></p>
+	  </div>
+	  <div class="modal-footer">
+	    <button class="btn btn-primary"  data-dismiss="modal" aria-hidden="true">确认</button>
+	  </div>
+	</div>
+<script type="text/javascript">
+	var isFirst = false;
+    $(document).ready(function(){
+        sendRequest("http://localhost:65000/servlet/initConfig","","Get",function(result){
+            var jsonResult = JSON.parse(result);
+            console.log(jsonResult);
+            if(jsonResult.errorCode == 0) {
+
+                var init = jsonResult["init"];
+                if (init) {
+                    isFirst = false;
+                    $(".second_hide").hide();
+                    $("#id").val(jsonResult["config"]["id"]);
+                    $("#zk_quorum").val(jsonResult["config"]["zk_quorum"]);
+                    $("#kafka_broker_list").val(jsonResult["config"]["kafka_broker_list"]);
+                    $("#key_serializer").val(jsonResult["config"]["key_serializer"]);
+                    $("#value_serializer").val(jsonResult["config"]["value_serializer"]);
+                    $("#listen_port").val(jsonResult["config"]["listen_port"]);
+                    $("#rpc_port").val(jsonResult["config"]["rpc_port"]);
+                    $("#dynamicload_classname").val(jsonResult["config"]["dynamicload_classname"]);
+                    $("#server_host").val(jsonResult["config"]["server_host"]);
+                    $("#server_host_username").val(jsonResult["config"]["server_host_username"]);
+                    $("#server_host_pwd").val(jsonResult["config"]["server_host_pwd"]);
+                    $("#nopwd").attr("checked",jsonResult["config"]["nopwd"]);
+
+                    if(jsonResult["config"]["nopwd"]){
+                        $(".server_host_pwd").hide();
+					}
+				}else{
+					isFirst = true;
+					$(".init_hide").hide();
+				}
+			}else{
+                $('#content').html("请请求失败!"+result.result);
+                $('#myModal').modal('show');
+			}
+		});
+        setInterval(startMonitorServer,2000);
+
+    });
+
+	function startMonitorServer(){
+
+        sendRequest("http://localhost:65000/servlet/nettyStatus","","Get",function(result){
+			var jsonResult = JSON.parse(result);
+			if(jsonResult.errorCode == 0){
+                var html = "";
+                for(var i=0;i<jsonResult.allServer.length;i++) {
+                    if(jsonResult.status[jsonResult.allServer[i]]) {
+                        html += '<tr><td>'+jsonResult.allServer[i]+'</td><td><div class="greencircle"></div></td></tr>';
+                    }else{
+                        html += '<tr><td>'+jsonResult.allServer[i]+'</td><td><div class="redcircle"></div></td></tr>';
+					}
+                }
+                    $("#status_table").html(html);
+			}else{
+
+			}
+		});
+
+	}
+
+
+    function hide_pwd_input(obj) {
+        if ($(obj).prop("checked")) {//jquery 1.6以前版本 用  $(this).attr("checked")
+			$(".server_host_pwd").hide();
+		} else {
+            $(".server_host_pwd").show();
+		}
+    }
+
+    $("#startup").click(function (e) {
+        sendRequest("http://localhost:65000/servlet/dispatchConfigFile","","Get",function(result){
+            console.log(result);
+            var jsonResult = JSON.parse(result);
+			if(result.errorCode == 0) {
+                console.log("success");
+                sendRequest("http://localhost:65000/servlet/dispatchJar", "", "Get", function (result) {
+                    var jsonResult = JSON.parse(result);
+                    console.log(jsonResult);
+                    if (result.errorCode == 0) {
+                        sendRequest("http://localhost:65000/servlet/startNetty", "", "Get", function (result) {
+                            var jsonResult = JSON.parse(result);
+
+                            if (result.errorCode == 0) {
+                                $('#content').html("设置成功!");
+                                $('#myModal').modal('show');
+                            }
+                        });
+                    }
+                });
+
+            }
+		});
+    });
+
+
+	$("#submit").click(function (e) {
+        var requestData = {};
+        requestData.isFirst = isFirst;
+	    if(!isFirst) {
+			var id = $("#id").val();
+	        var zk_quorum = $("#zk_quorum").val();
+            var kafka_broker_list = $("#kafka_broker_list").val();
+            var key_serializer = $("#key_serializer").val();
+            var value_serializer = $("#value_serializer").val();
+            var listen_port = $("#listen_port").val();
+            var rpc_port = $("#rpc_port").val();
+            var dynamicload_classname = $("#dynamicload_classname").val();
+            var server_host = $("#server_host").val();
+            var server_host_username = $("#server_host_username").val();
+            var server_host_pwd = $("#server_host_pwd").val();
+            var nopwd = $("#nopwd").prop("checked");
+
+            requestData.id = id;
+            requestData.zk_quorum = zk_quorum;
+            requestData.kafka_broker_list = kafka_broker_list;
+            requestData.key_serializer = key_serializer;
+            requestData.value_serializer = value_serializer;
+            requestData.listen_port = listen_port;
+            requestData.rpc_port = rpc_port;
+            requestData.dynamicload_classname = dynamicload_classname;
+            requestData.server_host = server_host;
+			requestData.server_host_username = server_host_username;
+			requestData.server_host_pwd = server_host_pwd;
+			requestData.nopwd = nopwd;
+
+            submit(requestData);
+        }else {
+            var mysql_username = $("#mysql_username").val();
+            var mysql_pwd = $("#mysql_pwd").val();
+            var mysql_driver = $("#mysql_driver").val();
+            var mysql_URL = $("#mysql_URL").val();
+            var mysql_database_name = $("#mysql_database_name").val();
+            requestData.mysql_username = mysql_username;
+            requestData.mysql_pwd = mysql_pwd;
+            requestData.mysql_driver = mysql_driver;
+            requestData.mysql_URL = mysql_URL;
+			requestData.mysql_database_name =  mysql_database_name;
+
+            submit(requestData);
+        }
+
+    });
+	function submit(requestData) {
+		sendRequest("http://localhost:65000/servlet/settingConfig",requestData,"Post",function (result) {
+            console.log(result);
+		    var  jsonResult = JSON.parse(result);
+		    if(result.errorCode == 0) {
+                $('#content').html("设置成功!");
+                $('#myModal').modal('show');
+			} else{
+                $('#content').html("设置失败!"+result.result);
+                $('#myModal').modal('show');
+			}
+        })
+    }
+	function sendRequest(url,requestData,type,callback){
+		//var url = "http://localhost:9123/servlet/faultTrigger"
+        var resultBean = {};
+		$.ajax(
+				{
+					url:url,
+					data:requestData,
+					type:type,
+					timeout:60000,
+					success:function(result){
+					    callback(result)
+						/*console.log(result)
+						$('#content').html("请求成功!");
+						$('#myModal').modal('show');*/
+					},
+					error:function(xhr,status,error){
+                        console.log(error)
+                        resultBean.errorCode = 1;
+                        resultBean.message = error;
+                        callback(JSON.stringify(resultBean))
+						/*$('#content').html("请请求失败!"+error);
+						$('#myModal').modal('show');*/
+					}
+				}
+				);
+	}
+	
+</script>
+</body>
+</html>

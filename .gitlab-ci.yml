@@ -1,0 +1,22 @@
+stages:
+  - test
+  
+image: mlamp/mvn-sunjdk8-git
+cache:
+  key: maven-repository-cache
+  paths:
+  - /data/repo/.m2
+ #本次构建的阶段：build package deploy
+variables:
+  MAVEN_OPTS: "-Dmaven.repo.local=/data/repo/.m2"
+
+test_job:
+  stage: test
+  script:
+    - mkdir -p /data/repo/.m2
+   #示例：怎样配置hosts
+    - echo -e "172.16.1.221 mdp1\r\n172.16.1.222 mdp2\r\n172.16.1.223 mdp3" >> /etc/hosts
+    - (cd nettyDataRecv && mvn $MAVEN_OPTS package) 
+   #更新sonarqube
+   #Sonar检查gate不过的话，在pipeline里报错。在配置了sonar-project.properties的目录下运行命令
+    - /sonar-scanner-4.2.0.1873-linux/bin/sonar-scanner -Dsonar.qualitygate.wait=true

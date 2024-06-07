@@ -1,0 +1,42 @@
+.redcircle{
+	width:20px;
+	height:20px;
+	background-color:red;
+	border-radius:10px;
+	margin: 0 auto
+}
+
+.greencircle{
+	width:20px;
+	height:20px;
+	background-color:green;
+	border-radius:10px;
+	margin: 0 auto
+}
+.status_table th{
+	text-align: center !important;
+}
+
+.status_table td{
+	text-align: center !important;
+}
+.value_css{
+	width: 45% !important;
+	float: left !important;
+	padding: 2px 2px;
+}
+.property_css{
+	width: 45% !important;
+	float: left !important;
+	padding: 2px 2px;
+}
+.pic_css{
+	width: 5% !important;
+	float: left !important;
+	padding: 2px 2px;
+}
+.property_add_css{
+	width: 95% !important;
+	float: left !important;
+	padding: 2px 2px;
+}

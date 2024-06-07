@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Netty Server</title>
+<script src="../js/jquery-3.2.1.min.js"></script>
+<script src="../js/bootstrap.min.js"></script>
+<script src="../js/data.js"></script>
+	<script src="../js/myjs.js"></script>
+<script type="text/javascript" src="../js/bootstrap-datetimepicker.js" charset="UTF-8"></script>
+<script type="text/javascript" src="../js/locales/bootstrap-datetimepicker.zh-CN.js" charset="UTF-8"></script>
+<link href="../css/bootstrap-theme.min.css" rel="stylesheet">
+<link href="../css/bootstrap.min.css" rel="stylesheet" media="screen">
+<link href="../css/bootstrap-datetimepicker.min.css" rel="stylesheet" media="screen">
+<link href="../css/mystyle.css?v=2" rel="stylesheet">
+    
+<link href="../css/bootstrap.min.css" rel="stylesheet" />
+<link href="../css/bootstrap-responsive.min.css" rel="stylesheet" />
+<link href="../css/font-awesome.css" rel="stylesheet" />
+ <link href="../css/adminia.css" rel="stylesheet" /> 
+<link href="../css/adminia-responsive.css" rel="stylesheet" /> 
+<link href="../css/pages/login.css" rel="stylesheet" />
+	<link href="../css/mystyle.css" rel="stylesheet" />
+	<style>
+		.icon-remove-sign:before{
+			content: "\f057";
+			font-size: 2em;
+			padding: 2px;
+		}
+		.icon-plus-sign {
+			content: "\f055";
+			font-size: 2em;
+			padding: 0px;
+		}
+	</style>
+</head>
+<body>
+<div class="navbar navbar-fixed-top">
+	<div class="navbar-inner">
+		<div class="container">
+			<a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse"> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 
+				<span class="icon-bar"></span> 				
+			</a>
+			<a class="brand" href="./">Netty Server 配置</a>
+			<div class="nav-collapse">
+				<ul class="nav pull-right">
+					<li class="">
+						<a href="javascript:;"><i class="icon-chevron-left"></i> Back to Homepage</a>
+					</li>
+				</ul>
+			</div> <!-- /nav-collapse -->
+		</div> <!-- /container -->
+	</div> <!-- /navbar-inner -->
+</div> <!-- /navbar -->
+
+<div id="login-container">
+	<div id="login-header">
+		<h3>重要参数设置</h3>
+	</div> <!-- /login-header -->
+	<div id="login-content" class="clearfix">
+	<form action="./" class="form-horizontal" >
+		<div class="row-fluid content">
+
+		</div>
+
+		<!--<div class="form-group">
+			<label for="kafka_broker_list">Kafka Broker List</label>
+			<input type="text" class="form-control" id="kafka_broker_list" placeholder="kafka_broker_list">
+		</div>
+		<div class="form-group">
+			<label for="key_serializer">Kafka keySerializer类名</label>
+			<input type="text" class="form-control" id="key_serializer" placeholder="keySerializer类名">
+		</div>
+		<div class="form-group">
+			<label for="key_patitions">Kafka 分区数</label>
+			<input type="text" class="form-control" id="key_patitions" placeholder="Kafka 分区数">
+		</div>
+		<div class="form-group">
+			<label for="key_patition_key">Kafka 分区key</label>
+			<input type="text" class="form-control" id="key_patition_key" placeholder="Kafka 分区key">
+		</div>
+		<div class="form-group">
+			<label for="value_serializer">Kafka valueSerializer类名</label>
+			<input type="text" class="form-control" id="value_serializer" placeholder="valueSerializer类名">
+		</div>
+		<div class="form-group">
+			<label for="listen_port">Netty 监听端口</label>
+			<input type="text" class="form-control" id="listen_port" placeholder="Netty 监听端口">
+		</div>
+		<div class="form-group">
+			<label for="rpc_port">Netty rpc监听端口</label>
+			<input type="text" class="form-control" id="rpc_port" placeholder="Netty rpc监听端口">
+		</div>
+		<div class="form-group">
+			<label for="dynamicload_classname">解析类名称</label>
+			<input type="text" class="form-control" id="dynamicload_classname" placeholder="解析类名称">
+		</div>
+		<div class="form-group">
+			<label for="server_host">Netty Server主机</label>
+			<input type="text" class="form-control" id="server_host" placeholder="Netty Server主机">
+		</div>
+		<div class="form-group">
+			<label for="server_host_username">Netty Server主机用户名</label>
+			<input type="password" class="form-control" id="server_host_username" placeholder="Netty Server主机用户名">
+		</div>
+		<div class="form-group init_hide">
+			<label class="checkbox">
+				<input type="checkbox" id="nopwd" onclick="hide_pwd_input(this)"> 免密登录
+			</label>
+		</div>
+		<div class="form-group server_host_pwd">
+			<label for="server_host_pwd">Netty Server主机密码</label>
+			<input type="password" class="form-control" id="server_host_pwd" placeholder="Netty Server主机密码">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_username">主数据mysql用户名</label>
+			<input type="text" class="form-control" id="mysql_username" placeholder="mysql用户名">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_pwd">主数据mysql密码</label>
+			<input type="text" class="form-control" id="mysql_pwd" placeholder="mysql密码">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_driver">主数据mysql驱动类</label>
+			<input type="text" class="form-control" id="mysql_driver" placeholder="mysql驱动类">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_URL">主数据mysql_URL</label>
+			<input type="text" class="form-control" id="mysql_URL" placeholder="mysql_URL">
+		</div>
+		<div class="form-group second_hide">
+			<label for="mysql_database_name">主数据mysql_database_name</label>
+			<input type="text" class="form-control" id="mysql_database_name" placeholder="数据库名称">
+		</div>
+			</fieldset>
+				<div class="pull-right">
+					<button type="button" class="btn btn-warning btn-large" id="commit">
+						确定
+					</button>
+				</div>
+			--> <!-- /login-content -->
+		<br>
+		<div class="pull-right">
+			<button type="button" class="btn btn-warning btn-large" id="commit">
+				提交
+			</button>
+		</div>
+
+	</form>
+
+	</div>
+</div> <!-- /login-wrapper -->
+</body>
+<script>
+		/*$("#commit").click(function(){
+		window.location.href="./dispatch.html";
+		//window.location.href='http://www.baidu.com';
+	});*/
+
+		var oldData = new Map();
+
+        $(document).ready(function(){
+            sendRequest("http://localhost:65000/servlet/initConfig","","Get",function(result){
+                var jsonResult = JSON.parse(result);
+
+                if(jsonResult.errorCode == 0) {
+
+                    var init = jsonResult["init"];
+                    if (init) {
+
+						for(var property in jsonResult["config"]){
+                            oldData.set(property,jsonResult["config"][property]);
+						    var html = "<div class=\"form-group key_value\">"+
+                            			"<div class=\"property_css\">"+
+											"<input type=\"text\" class=\"form-control col-sm-6 property\" value='"+property+"'>"+
+											"</div>"+
+											"<div class=\"value_css\">"+
+										"<input type=\"text\" class=\"form-control col-sm-5 value\" value='"+jsonResult["config"][property]+"'>"+
+										"</div>"+
+										"<div class='pic_css'><a class=\"btn btn-link\" href=\"javascript:void(0)\" onclick='deleteCol(this)'><i class=\"icon-remove-sign\"></i></a></div> "
+										"</div>";
+                            $(".content").append(html);
+
+						}
+                        var html = "<div class=\"form-group\">"+
+                            "<div class=\"property_add_css\">"+
+                            "<button type='button' class=\"btn btn-block btn-info\" onclick='addCol(this)' href='#'><i class=\"icon-plus-sign\" href='#'></i></button>"+
+                            "</div>"+
+                        "</div>";
+                        $(".content").append(html);
+                        /*$("#id").val(jsonResult["config"]["id"]);
+                        $("#zk_quorum").val(jsonResult["config"]["zk_quorum"]);
+                        $("#kafka_broker_list").val(jsonResult["config"]["kafka_broker_list"]);
+                        $("#key_serializer").val(jsonResult["config"]["key_serializer"]);
+                        $("#value_serializer").val(jsonResult["config"]["value_serializer"]);
+                        $("#listen_port").val(jsonResult["config"]["listen_port"]);
+                        $("#rpc_port").val(jsonResult["config"]["rpc_port"]);
+                        $("#dynamicload_classname").val(jsonResult["config"]["dynamicload_classname"]);
+                        $("#server_host").val(jsonResult["config"]["server_host"]);
+                        $("#server_host_username").val(jsonResult["config"]["server_host_username"]);
+                        $("#server_host_pwd").val(jsonResult["config"]["server_host_pwd"]);
+                        $("#nopwd").attr("checked",jsonResult["config"]["nopwd"]);
+						$("#key_patitions").val(jsonResult["config"]["key_patitions"]);
+                        $("#key_patition_key").val(jsonResult["config"]["key_patition_key"]);
+						$("#mysql_username").val(jsonResult["config"]["mysql_username"]);
+                        $("#mysql_pwd").val(jsonResult["config"]["mysql_pwd"]);
+                        $("#mysql_driver").val(jsonResult["config"]["mysql_driver"]);
+                        $("#mysql_URL").val(jsonResult["config"]["mysql_URL"]);
+						$("#mysql_database_name").val(jsonResult["config"]["mysql_database_name"]);
+                        if(jsonResult["config"]["nopwd"]){
+                            $(".server_host_pwd").hide();
+                        }*/
+                    }
+                }else{
+                    $('#content').html("请求失败!"+result.result);
+                    $('#myModal').modal('show');
+                }
+            });
+            //setInterval(startMonitorServer,2000);
+        });
+
+        function hide_pwd_input(obj) {
+            if ($(obj).prop("checked")) {//jquery 1.6以前版本 用  $(this).attr("checked")
+                $(".server_host_pwd").hide();
+            } else {
+                $(".server_host_pwd").show();
+            }
+        }
+
+        function addCol(obj) {
+            var html = "<div class=\"form-group key_value\">"+
+                "<div class=\"property_css\">"+
+                "<input type=\"text\" class=\"form-control col-sm-6 property\" placeholder='属性'>"+
+                "</div>"+
+                "<div class=\"value_css\">"+
+                "<input type=\"text\" class=\"form-control col-sm-5 value\" placeholder='值'>"+
+                "</div>"+
+                "<div class='pic_css'><a class=\"btn btn-link\" href=\"javascript:void(0)\" onclick='deleteCol(this)'><i class=\"icon-remove-sign\"></i></a></div> "
+            "</div>";
+			$(obj).parent().parent().before(html);
+        }
+
+
+        $("#commit").click(function(){
+            var requestData = {};
+            var addValues = {};//new Map();
+            var updateVaues = {};//new Map();
+            var deleteValues = {};//new Map();
+            var allsubmitData  = new Map();
+			$(".content > .key_value").each(function(index,obj) {
+				var  property = $($($(obj)[0].children)[0].getElementsByClassName("property")).val();
+                var  value = $($($(obj)[0].children)[1].getElementsByClassName("value")).val();
+                //判断是否数据改变，添加，修改
+                allsubmitData.set(property);
+                if(oldData.has(property)){
+					if(oldData.get(property) === value){
+						//未改变，不添加
+					}else{
+					    updateVaues[property] = value;
+                        //updateVaues.set(property,value);
+					}
+				}else {
+                    addValues[property] = value;
+                    //addValues.set(property,value);
+                }
+            });
+			//找出不存在删除的数据
+			for(var key in oldData){
+				if(!allsubmitData.has(key)){
+				    deleteValues[key] = 1;
+				    //deleteValues.set(key,1);
+				}
+			}
+            requestData["add"] = JSON.stringify(addValues);
+            requestData["update"] = JSON.stringify(updateVaues);
+            requestData["delete"] = JSON.stringify(deleteValues);
+
+
+            sendRequest("http://localhost:65000/servlet/settingConfig",requestData,"Post",function(result) {
+                console.log(result)
+                var jsonResult = JSON.parse(result);
+                if (jsonResult.errorCode == 0) {
+                    window.location.href = "./dispatch.html";
+                }
+            });
+        });
+        function deleteCol(obj) {
+			$(obj).parent().parent().remove();
+        }
+</script>
+</html>
